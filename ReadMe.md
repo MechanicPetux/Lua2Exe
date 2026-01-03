@@ -25,7 +25,7 @@ Currently there's not much, but it has the basics:
 * Compilation to DLL dependent exe.
 * Support of different compilers. (Kinda. It wasn't tested)
 
-## Dependicies
+## Dependencies
 To use all features required:
 * Lua source code.
 * Lua DLL.
