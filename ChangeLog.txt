@@ -1,0 +1,9 @@
+v1.1
+This update i mainly been fixing crap i made in first version
+Now compiler doesn't recompile whole Lua from source, but uses object files, like it supposed to do
+Added temp path generation function, hopefully made program more portable
+Added possibility to remove redundant parsing to make exe smaller (-np option)
+Added possibility to see what compiler produced on different stages (-M -C options)
+Added support of C dependencies! You can now shove C code into standalone and use it just like with dll
+Made short manual, describing features of the compiler
+Internally, now it doesn't add indentation to merged code in package.preload, as it was affecting long strings

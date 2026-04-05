@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>L2E Manual</title>
+	<style>
+		body {
+			color: white;
+			background: black;
+			width: min(100vh, calc(100vw - 32px));
+		}
+		body:has(#toggle:checked) {
+			color: black;
+			background: white;
+		}
+	</style>
+</head>
+<body>
+	LIGHT THEME<input id="toggle" type="checkbox">
+	<h1>Installation</h1>
+	<h3>How to install Lua2Exe to different systems</h3>
+	<h4>Windows</h4>
+	<p>
+		Download release from <a href="https://github.com/MechanicPetux/Lua2Exe/releases">here</a>, unpack somewhere so exe is in your %PATH% environment variable,
+		and edit the Config.lua to suit your environment. The entries's purpose is written in file, as well as in section below.
+	</p>
+	<h4>Other systems</h4>
+	<p>
+		You will need to compile it from the source, the Make.ps1 is included, so just run it if you have powershell, gcc and Lua.
+		Or edit it to suit your shell and environment. After compilation, edit the Config.lua to suit your environment.
+		At last, you need to either move it somewhere Lua can include config from, or pass "-conf path" for each compilation.
+	</p>
+	<p>
+		Why more work for other systems: On non Windows systems, Lua cannot include files in the exe's directory, in which config is;
+		and i don't have a compiler (or don't know how) to compile L2E for other systems.
+	</p>
+	<br>
+	
+	<h1>Config</h1>
+	<h3>What each entry does</h3>
+	<p>
+		LibDir — Folder where libs sit. By default folder with compiler itself.
+	</p>
+	<p>
+		IncludeDir — Folder where Lua includes sit. By default folder with compiler itself/Include.
+	</p>
+	<p>
+		Compiler — C compiler in your system to be invoked on compilation. Supported values are "gcc", "clang", "tcc".
+		I don't like this external compiler dependency for many reasons, and in the next update it will probably be replaced by embedded compiler
+	</p>
+	<br>
+	
+	<h1>Options</h1>
+	<h3>Detailed explanation what every option does</h3>
+	Note that you can use options with both '-' for Linux style, or with '/' for Windows style
+	<p>
+		-o File — Set output file name
+	</p>
+	<p>
+		-c Compiler — Set C compiler. Overwrites value from config.
+	</p>
+	<p>
+		-conf Path — Set L2E config file. File shall be accessible for require (without .lua extension).
+		This is a crutch for portability, as i don't know other good way to do this.
+	</p>
+	<p>
+		-s — Strip debug information. Tells C compiler to strip symbols from exe, and tells Lua to strip debug from loaded code.
+	</p>
+	<p>
+		-dll — Make exe dynamically linked. The libLuadll.dll is shipped with a compiler,
+		and i don't know if Linux's C compiler can link to DLL, maybe you will need to rename it to shared object.
+	</p>
+	<p>
+		-M — Only merge files into one, do not compile. Analog of -E for C i think.
+	</p>
+	<p>
+		-C — Only compile files to C, do not compile to exe. C file contains definition of libraries and bytecode.
+	</p>
+	<p>
+		-v — Be verbose; Currently it only prints command for C compiler
+	</p>
+	<p>
+		-np — Remove parsing related C code. By C code i mean lexing, parsing and code generation libraries.
+		This reduces output exe size, but takes away ability to load any text chunks. Program will notify you and throw an error on attempt.
+		Probably will not take effect if exe is dynamically linked, as whole Lua is in dll.
+	</p>
+	<p>
+		-a Options — Additional options to pass to C compiler. Options are passed before any file. If multiple "-a" passed, the last will be used.
+	</p>
+	<p>
+		-[h | ?] — Display help.
+	</p>
+	<br>
+	
+	
+	<h1>How to</h1>
+	<h3>How to use features of the L2E</h3>
+	General template for any compilation is "l2e [options] [modules...] main_file"
+	<h4>Lua dependencies</h4>
+	<p>
+		Lua doesn't have "main" function like C does, and thus compiler doesn't know which one is it.
+		Because of this, order of input files matters: main file is last Lua file.
+		L2E uses Lua's built-in searchers to find modules, this means you need to just copy paste names from require(); that is <i>My.lua</i> turns into <i>My</i>
+	</p>
+	<h4>C dependencies</h4>
+	<p>
+		All you need to add C dependency to standalone exe is object file with your dependency.
+		Pass object file (with .o extension) to the compiler and that's all.
+		The only mandatory function is luaopen_&lt;filename without extension&gt;, the same name that Lua's loader uses to load dlls.
+		In Lua you can use it as global, or with require(), as if using the dll.
+		L2E treats each object file as separate library.
+	</p>
+</body>
+</html>

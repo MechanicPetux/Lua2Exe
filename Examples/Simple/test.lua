@@ -1,0 +1,5 @@
+print("WORKS")
+local module = require("test2")
+print(module.huh())
+print(load("local b"))
+error("error")
